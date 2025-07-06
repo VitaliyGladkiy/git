@@ -1,6 +1,9 @@
 {
   "name": "vulnerable-app",
   "version": "1.0.0",
+  "scripts": {
+    "test": "echo \" hello test\""
+  },
   "dependencies": {
     "express": "^4.18.0",
     "mysql2": "^3.0.0",
