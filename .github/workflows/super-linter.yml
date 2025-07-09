@@ -29,3 +29,20 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VALIDATE_JAVASCRIPT_ESLINT: true
           FIX_JAVASCRIPT_ES: true
+
+      - name: Check for changes
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          echo "files_changed=$(git status --porcelain | wc -l)" >> $GITHUB_ENV
+
+      - name: Create Pull Request
+        if: env.files_changed != '0'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          commit-message: "chore: autofix lint errors"
+          title: "chore: autofix lint errors"
+          body: "This PR applies automatic lint fixes from Super Linter."
+          branch: "autofix/lint-errors"
+          base: main
+          delete-branch: true
