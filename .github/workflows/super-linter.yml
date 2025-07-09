@@ -16,6 +16,7 @@ jobs:
       - name: Lint Code Base
         uses: github/super-linter@v6
         env:
+          LINTER_RULES_PATH: .github/linters/
           VALIDATE_ALL_CODEBASE: true
           VALIDATE_AUTO_FIX: true
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
