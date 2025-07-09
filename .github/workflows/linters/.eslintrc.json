@@ -1,0 +1,16 @@
+    {
+      "rules": {
+        "no-console": "warn",
+        "semi": ["error", "always"],
+          "new-cap": [
+                "error",
+                {
+                    "newIsCap": true
+                }
+            ],
+            "complexity": [
+                "warn",
+                5
+            ]
+      }
+    }
