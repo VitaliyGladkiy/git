@@ -7,23 +7,21 @@ on:
 jobs:
   run-lint:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
-      - name: Lint Code Base
-        uses: github/super-linter@v6
-        env:
-          LINTER_RULES_PATH: .github/linters/
-          VALIDATE_ALL_CODEBASE: true
-          VALIDATE_AUTO_FIX: true
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          DEFAULT_BRANCH: "main"
-          VALIDATE_JAVASCRIPT_ESLINT: true
-          FIX_JAVASCRIPT_ES: true
-          FIX_JAVASCRIPT_PRETTIER: true
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run ESLint with autofix
+        run: npx eslint . --ext .js,.jsx --fix
 
       - name: Commit and push fixes
         run: |
