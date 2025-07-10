@@ -7,8 +7,9 @@ export default [
     },
     rules: {
       complexity: ['warn', 5],
-      'no-unused-vars': 'warn',
-      'camelcase': 'error',
-    },
-  },
+      camelcase: 'error',
+      'no-unused-vars': 'warn'
+    }
+  }
 ];
+
