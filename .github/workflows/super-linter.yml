@@ -1,54 +1,36 @@
-name: Lint
+name: Lint Code Base
 
-on: # yamllint disable-line rule:truthy
-  push: null
-  pull_request: null
-
-permissions:
-  contents: read
+on:
+  push:
+    branches: [ "main" ]
 
 jobs:
-  lint:
-    # Super-linter workflow running in check only mode
-    # See https://github.com/super-linter/super-linter#get-started
-
-  fix-lint-issues:
-    permissions:
-      # To write linting fixes
-      contents: write
-      # To write Super-linter status checks
-      statuses: write
+  run-lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: Super-Linter
-        uses: super-linter/super-linter@v7.4.0 # x-release-please-version
+
+      - name: Lint Code Base
+        uses: github/super-linter@v6
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # Set your fix mode variables to true
-          #LINTER_RULES_PATH: .github/linters/
-          #VALIDATE_ALL_CODEBASE: true
+          LINTER_RULES_PATH: .github/linters/
+          VALIDATE_ALL_CODEBASE: true
           VALIDATE_AUTO_FIX: true
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DEFAULT_BRANCH: "main"
           VALIDATE_JAVASCRIPT_ESLINT: true
           FIX_JAVASCRIPT_ES: true
           FIX_JAVASCRIPT_PRETTIER: true
-          # To reuse the same Super-linter configuration that you use in the
-          # lint job without duplicating it, see
-          # https://github.com/super-linter/super-linter/blob/main/docs/run-linter-locally.md#share-environment-variables-between-environments
-      - name: Commit and push linting fixes
-        # Run only on:
-        # - Pull requests
-        # - Not on the default branch
-        if: >
-          github.event_name == 'pull_request' &&
-          github.ref_name != github.event.repository.default_branch
-        uses: stefanzweifel/git-auto-commit-action@v5
-        with:
-          branch: ${{ github.event.pull_request.head.ref || github.head_ref || github.ref }}
-          commit_message: "chore: fix linting issues"
-          commit_user_name: super-linter
-          commit_user_email: super-linter@super-linter.dev
+
+      - name: Commit and push fixes
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+          git add .
+          git commit -m "chore: auto-fix lint issues" || echo "No changes to commit"
+          git push origin HEAD:main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
